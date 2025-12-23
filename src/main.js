@@ -1,4 +1,4 @@
-import '../styles/index.css';
+import './styles/index.css';
 import { GameEngine } from './scripts/core/GameEngine';
 import { InputManager } from './scripts/managers/InputManager';
 import { StateManager } from './scripts/managers/StateManager';

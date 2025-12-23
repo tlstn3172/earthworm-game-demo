@@ -34,9 +34,13 @@
 
 ### ❌ TDD 미적용 (UI 레이어)
 
-- `src/scripts/ui/` - UI 화면 컴포넌트
-- `src/scripts/components/` - UI 컴포넌트
-- `src/styles/` - 스타일시트
+**UI 컴포넌트는 자동화된 테스트를 작성하지 않습니다:**
+
+- `src/scripts/ui/` - UI 화면 컴포넌트 (수동 테스트)
+- `src/scripts/components/` - UI 컴포넌트 (수동 테스트)
+- `src/styles/` - 스타일시트 (시각적 검증)
+
+> **참고**: UI는 브라우저에서 직접 확인하며, E2E 테스트도 코어 로직 통합에만 집중합니다.
 
 ---
 

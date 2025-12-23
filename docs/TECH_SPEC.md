@@ -1228,10 +1228,11 @@ self.addEventListener('fetch', (event) => {
 
 ## 9. 테스트 전략
 
-### 9.1 유닛 테스트
+### 9.1 유닛 테스트 (코어 로직)
 
+**자동화 대상:**
 ```javascript
-// tests/unit/Snake.test.js
+// tests/unit/core/Snake.test.js
 import { Snake } from '../../src/scripts/core/Snake.js';
 
 describe('Snake', () => {
@@ -1259,20 +1260,19 @@ describe('Snake', () => {
   });
   
   test('should detect self collision', () => {
-    // 스네이크를 원형으로 만들어 충돌 유도
     snake.body = [
       { x: 100, y: 100 },
       { x: 120, y: 100 },
       { x: 120, y: 120 },
       { x: 100, y: 120 },
-      { x: 100, y: 100 } // 머리와 같은 위치
+      { x: 100, y: 100 }
     ];
     expect(snake.checkSelfCollision()).toBe(true);
   });
 });
 ```
 
-### 9.2 통합 테스트
+### 9.2 통합 테스트 (코어 로직)
 
 ```javascript
 // tests/integration/Game.test.js
@@ -1300,7 +1300,6 @@ describe('Game Integration', () => {
     const initialLength = game.snake.body.length;
     const initialScore = game.score;
     
-    // 먹이를 스네이크 머리 위치로 이동
     game.food.position = { ...game.snake.body[0] };
     game.update(16);
     
@@ -1309,7 +1308,6 @@ describe('Game Integration', () => {
   });
   
   test('should end game on wall collision', () => {
-    // 스네이크를 벽 밖으로 이동
     game.snake.body[0] = { x: -20, y: 100 };
     game.update(16);
     
@@ -1318,57 +1316,99 @@ describe('Game Integration', () => {
 });
 ```
 
-### 9.3 E2E 테스트 (Playwright)
+### 9.3 E2E 테스트 (코어 로직 통합만)
+
+> **중요**: E2E 테스트는 UI 자동화가 아닌 코어 로직의 브라우저 환경 통합 검증에 사용합니다.
 
 ```javascript
-// tests/e2e/gameplay.spec.js
+// tests/e2e/core-integration.spec.js
 import { test, expect } from '@playwright/test';
 
-test.describe('Snake Reborn Gameplay', () => {
+test.describe('Core Logic Integration', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:5173');
   });
   
-  test('should display start screen', async ({ page }) => {
-    await expect(page.locator('h1')).toContainText('SNAKE REBORN');
-    await expect(page.locator('button:has-text("GAME START")')).toBeVisible();
+  test('should initialize game core correctly', async ({ page }) => {
+    // 게임 객체가 생성되었는지 확인
+    const gameExists = await page.evaluate(() => {
+      return window.game !== undefined;
+    });
+    expect(gameExists).toBe(true);
   });
   
-  test('should start game on button click', async ({ page }) => {
-    await page.click('button:has-text("GAME START")');
-    await expect(page.locator('canvas')).toBeVisible();
-    await expect(page.locator('.score-display')).toBeVisible();
-  });
-  
-  test('should control snake with keyboard', async ({ page }) => {
+  test('should handle keyboard input in core logic', async ({ page }) => {
     await page.click('button:has-text("GAME START")');
     
-    // 방향키로 이동
-    await page.keyboard.press('ArrowRight');
-    await page.waitForTimeout(500);
+    // 스네이크 초기 방향 확인
+    const initialDirection = await page.evaluate(() => {
+      return window.game.snake.direction;
+    });
+    
+    // 키보드 입력
     await page.keyboard.press('ArrowDown');
+    await page.waitForTimeout(100);
     
-    // 게임이 계속 진행 중인지 확인
-    const score = await page.locator('.score-display').textContent();
-    expect(score).toBeTruthy();
+    // 방향 변경 확인
+    const newDirection = await page.evaluate(() => {
+      return window.game.snake.direction;
+    });
+    
+    expect(newDirection).not.toEqual(initialDirection);
   });
   
-  test('should save high score', async ({ page }) => {
+  test('should save score to localStorage', async ({ page }) => {
     await page.click('button:has-text("GAME START")');
-    
-    // 게임 플레이 시뮬레이션
     await page.waitForTimeout(5000);
     
-    // 로컬 스토리지 확인
-    const bestScore = await page.evaluate(() => {
+    const savedScore = await page.evaluate(() => {
       const data = localStorage.getItem('snakeReborn');
       return data ? JSON.parse(data).bestScore : 0;
     });
     
-    expect(bestScore).toBeGreaterThanOrEqual(0);
+    expect(savedScore).toBeGreaterThanOrEqual(0);
   });
 });
 ```
+
+### 9.4 UI 수동 테스트
+
+**UI 컴포넌트는 자동화하지 않고 브라우저에서 직접 확인합니다:**
+
+**체크리스트:**
+- [ ] 시작 화면
+  - [ ] 로고 및 타이틀 표시
+  - [ ] 최고 점수 위젯 동작
+  - [ ] 버튼 호버/클릭 애니메이션
+  - [ ] 다크/라이트 모드 전환
+  
+- [ ] 게임 화면
+  - [ ] HUD 요소 표시 (점수, 타이머)
+  - [ ] Canvas 렌더링 확인
+  - [ ] 조이스틱 시각적 피드백
+  - [ ] 부스트 버튼 애니메이션
+  
+- [ ] 게임 오버 화면
+  - [ ] 점수 카드 애니메이션
+  - [ ] 버튼 레이아웃
+  - [ ] 화면 전환 효과
+  
+- [ ] 설정 화면
+  - [ ] 토글 스위치 동작
+  - [ ] 슬라이더 인터랙션
+  - [ ] 설정 저장 확인
+
+**반응형 테스트:**
+- [ ] iPhone (375×667)
+- [ ] iPad (768×1024)
+- [ ] Desktop (1920×1080)
+
+**브라우저 테스트:**
+- [ ] Chrome (최신)
+- [ ] Firefox (최신)
+- [ ] Safari (최신)
+- [ ] Mobile Safari
+- [ ] Chrome Mobile
 
 ---
 

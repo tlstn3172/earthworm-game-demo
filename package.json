@@ -1,0 +1,36 @@
+{
+  "name": "snake-reborn",
+  "version": "1.0.0",
+  "description": "Modern mobile snake game with neon aesthetics",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:e2e": "playwright test",
+    "lint": "eslint src --ext .js",
+    "format": "prettier --write \"src/**/*.{js,css,html}\"",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "keywords": [
+    "game",
+    "snake",
+    "mobile",
+    "pwa",
+    "canvas"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vite-plugin-pwa": "^0.17.0",
+    "@playwright/test": "^1.40.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.0",
+    "gh-pages": "^6.1.0"
+  }
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Snake Reborn</title>
+
+  <!-- PWA Config -->
+  <meta name="theme-color" content="#172210" />
+  <meta name="description" content="Modern mobile snake game with neon aesthetics" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body>
+  <div id="app">
+    <!-- Game Container will be injected here -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- UI Layers -->
+    <div id="ui-layer">
+      <!-- Start Screen -->
+      <div id="start-screen" class="screen active">
+        <h1 class="logo">SNAKE<br>REBORN</h1>
+        <p class="high-score">High Score: <span id="start-high-score">0</span></p>
+        <div class="button-group">
+          <button id="start-btn" class="btn primary">TAP TO START</button>
+          <button id="settings-btn" class="btn secondary">SETTINGS</button>
+        </div>
+      </div>
+
+      <!-- Settings Screen -->
+      <div id="settings-screen" class="screen hidden">
+        <h2>SETTINGS</h2>
+        <div class="settings-list">
+          <!-- Theme -->
+          <div class="setting-item">
+            <span class="label">THEME</span>
+            <button id="toggle-theme" class="toggle-btn">DARK</button>
+          </div>
+
+          <!-- Sound -->
+          <div class="setting-item">
+            <span class="label">SOUND</span>
+            <button id="toggle-sound" class="toggle-btn active">ON</button>
+          </div>
+
+          <!-- Vibration -->
+          <div class="setting-item">
+            <span class="label">HAPTIC</span>
+            <button id="toggle-vibration" class="toggle-btn active">ON</button>
+          </div>
+
+          <!-- Difficulty -->
+          <div class="setting-group">
+            <span class="label group-label">DIFFICULTY</span>
+            <div class="button-row">
+              <button class="difficulty-btn" data-diff="easy">EASY</button>
+              <button class="difficulty-btn active" data-diff="normal">NORMAL</button>
+              <button class="difficulty-btn" data-diff="hard">HARD</button>
+            </div>
+          </div>
+
+          <!-- Sensitivity -->
+          <div class="setting-group">
+            <span class="label group-label">SENSITIVITY</span>
+            <div class="slider-container">
+              <input type="range" id="sensitivity-slider" min="1" max="100" value="30">
+              <span id="sensitivity-value">30</span>
+            </div>
+          </div>
+        </div>
+        <button id="settings-back-btn" class="btn secondary">BACK</button>
+        <p class="version">v1.0.0</p>
+      </div>
+
+      <!-- HUD (Heads Up Display) -->
+      <div id="hud" class="screen hidden">
+        <div class="score-container">
+          <span class="label">SCORE</span>
+          <span id="current-score">0</span>
+        </div>
+        <button id="pause-btn" class="icon-btn" aria-label="Pause Game">
+          <span class="material-symbols-outlined">pause</span>
+        </button>
+      </div>
+
+      <!-- Pause Screen -->
+      <div id="pause-screen" class="screen hidden">
+        <h2>PAUSED</h2>
+        <button id="resume-btn" class="btn secondary">RESUME</button>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="gameover-screen" class="screen hidden">
+        <h2>GAME OVER</h2>
+        <div class="final-score">
+          <span class="label">SCORE</span>
+          <span id="final-score">0</span>
+        </div>
+        <div class="best-score">
+          <span class="label">BEST</span>
+          <span id="final-high-score">0</span>
+        </div>
+        <button id="restart-btn" class="btn primary">TRY AGAIN</button>
+        <div class="row-btn-group">
+          <button id="home-btn" class="btn text">MAIN MENU</button>
+          <button id="share-btn" class="btn text icon-only" aria-label="Share Score">
+            <span class="material-symbols-outlined">share</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- In-Game Controls -->
+      <button id="boost-btn" class="icon-btn boost hidden" aria-label="Boost Speed">
+        <span class="material-symbols-outlined">bolt</span>
+      </button>
+
+      <!-- Toast Notification -->
+      <div id="toast"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+{
+    "name": "Snake Reborn",
+    "short_name": "Snake",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#172210",
+    "theme_color": "#172210",
+    "description": "Modern mobile snake game with neon aesthetics",
+    "icons": [
+        {
+            "src": "/app_icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

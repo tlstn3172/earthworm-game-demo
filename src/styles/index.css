@@ -1,0 +1,385 @@
+:root {
+    --color-bg: #172210;
+    --color-primary: #7bf425;
+    --color-secondary: #5ec315;
+    --color-accent: #ff0055;
+    --color-text: #ffffff;
+    --color-text-dim: rgba(255, 255, 255, 0.6);
+    --font-main: 'Spline Sans', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+#app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* UI Layer */
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Allow touches to pass to canvas/input manager */
+}
+
+/* Screens */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(23, 34, 16, 0.85);
+    backdrop-filter: blur(4px);
+    pointer-events: auto;
+    /* Enable interaction for UI elements */
+    transition: opacity 0.3s ease;
+}
+
+.screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.screen.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#hud {
+    background: transparent;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    backdrop-filter: none;
+    pointer-events: none;
+    /* IMPORTANT: Let touches pass through HUD area except buttons */
+}
+
+#hud>* {
+    pointer-events: auto;
+}
+
+/* Typography */
+h1.logo {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    color: var(--color-primary);
+    text-shadow: 0 0 20px rgba(123, 244, 37, 0.5);
+    margin-bottom: 2rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+    color: var(--color-text);
+    margin-bottom: 2rem;
+}
+
+.label {
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.score-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#current-score {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Buttons */
+.btn {
+    border: none;
+    padding: 16px 32px;
+    font-family: var(--font-main);
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: transform 0.1s, filter 0.2s;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn.primary {
+    background: var(--color-primary);
+    color: #000;
+    box-shadow: 0 4px 12px rgba(123, 244, 37, 0.4);
+}
+
+.btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn.text {
+    background: transparent;
+    color: var(--color-text-dim);
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Game Over Stats */
+.final-score,
+.best-score {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#final-score {
+    font-size: 4rem;
+    color: var(--color-primary);
+    display: block;
+}
+
+#final-high-score {
+    font-size: 1.5rem;
+}
+
+/* Boost Button */
+.icon-btn.boost {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 72px;
+    height: 72px;
+    background: var(--color-primary);
+    color: #000;
+    pointer-events: auto;
+    box-shadow: 0 0 20px rgba(123, 244, 37, 0.4);
+    z-index: 10;
+    transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.icon-btn.boost:active {
+    transform: scale(0.9);
+    box-shadow: 0 0 10px rgba(123, 244, 37, 0.6);
+}
+
+.icon-btn.boost.hidden {
+    display: none;
+}
+
+/* Settings */
+.settings-list {
+    width: 80%;
+    margin-bottom: 2rem;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toggle-btn {
+    background: #333;
+    color: #888;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.toggle-btn.active {
+    background: var(--color-primary);
+    color: #000;
+}
+
+
+
+/* New Settings UI */
+.setting-group {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.group-label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+}
+
+.row-btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn.icon-only {
+    padding: 12px;
+    min-width: 48px;
+}
+
+/* Toast Message */
+#toast {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+}
+
+#toast.show {
+    opacity: 1;
+}
+
+
+
+.difficulty-btn {
+    flex: 1;
+    background: #333;
+    color: #888;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.difficulty-btn.active {
+    background: var(--color-primary);
+    color: #000;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#sensitivity-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: #333;
+    border-radius: 3px;
+    outline: none;
+}
+
+#sensitivity-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#sensitivity-value {
+    width: 30px;
+    text-align: right;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* Light Theme */
+body.light-theme {
+    --color-bg: #f0f0f0;
+    --color-text: #1a1a1a;
+    --color-text-dim: rgba(0, 0, 0, 0.6);
+    --color-primary: #5ec315;
+    /* Darker green for visibility on light */
+    --color-secondary: #4a9e10;
+}
+
+body.light-theme .screen {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+body.light-theme .btn.secondary,
+body.light-theme .icon-btn,
+body.light-theme .setting-item,
+body.light-theme .setting-group {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .btn.secondary,
+body.light-theme .icon-btn {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .difficulty-btn,
+body.light-theme .toggle-btn {
+    background: #e0e0e0;
+    color: #666;
+}
+
+body.light-theme .difficulty-btn.active,
+body.light-theme .toggle-btn.active {
+    background: var(--color-primary);
+    color: #fff;
+}

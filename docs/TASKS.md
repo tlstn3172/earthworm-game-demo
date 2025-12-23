@@ -141,6 +141,6 @@
 ### 8.1 GitHub Pages 설정
 - [x] 설정: `vite.config.js` Base Path (`/earthworm-game-demo/`)
 - [x] 자동화: GitHub Actions Workflow 생성 (`static.yml`)
-- [ ] 실행: GitHub Push 및 배포 확인
+- [x] 실행: GitHub Push 및 배포 확인
 
 
